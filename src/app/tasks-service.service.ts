@@ -1,16 +1,34 @@
 import { Injectable } from '@angular/core';
-import {Task} from "./model/task";
+import { Http, Response, Headers} from '@angular/http';
+
+import {Observable} from "rxjs/Observable";
+import {Paged} from "./model/generated";
 
 @Injectable()
 export class TasksServiceService {
 
-  constructor() {}
+  private tasksUrl = "http://localhost:9080/trinity/service/tasks";
 
-  getTasks() {
-    var tasks: Task[] = [];
-    tasks.push({id: 3, name: "bob"})
-    tasks.push({id:4, name: "sue"})
-    return tasks;
+  constructor (private http: Http) {}
+
+  getTasks(paged: Paged): Observable<Response> {
+    var headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    return this.http.put(this.tasksUrl, JSON.stringify(paged), {headers: headers});
+  }
+  private extractData(res: Response) {
+    if (res.status < 200 || res.status >= 300) {
+      throw new Error('Bad response status: ' + res.status);
+    }
+    let body = res.json();
+    return body.data || { };
+  }
+
+  private handleError (error: any) {
+    // In a real world app, we might send the error to remote logging infrastructure
+    let errMsg = error.message || 'Server error';
+    console.error(errMsg); // log to console instead
+    return Observable.throw(errMsg);
   }
 
 }
