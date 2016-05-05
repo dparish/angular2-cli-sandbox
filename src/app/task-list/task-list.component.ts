@@ -40,11 +40,13 @@ export class TaskListComponent implements OnInit {
 
   private getTasks() {
     this.tasksService.getTasks(this.paged)
-      .subscribe((res: Response) => {
-        var taskResponse: GetTasksResult = res.json();
-        this.tasks = taskResponse.tasks;
-        console.log("got " + this.tasks.length + " tasks");
-        this.total = taskResponse.total;
-      });
+      .subscribe(
+        taskResponse => {
+          this.tasks = taskResponse.tasks;
+          console.log("got " + this.tasks.length + " tasks");
+          this.total = taskResponse.total;
+        },
+        error => console.log(error)
+      );
   }
 }
