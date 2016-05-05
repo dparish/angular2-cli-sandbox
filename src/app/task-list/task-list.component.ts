@@ -14,21 +14,36 @@ export class TaskListComponent implements OnInit {
 
   tasks: Task[];
   errorMessage: String;
+  total: number = 0;
+  private paged: Paged = {
+    from: 0,
+    size: 20
+  };
 
   constructor(private tasksService: TasksServiceService) {}
 
   ngOnInit() {
-    var paged: Paged = {
-      from: 0,
-      size: 50
-    };
-    this.tasksService.getTasks(paged)
-                        .subscribe((res: Response) => {
-                          var taskResponse: GetTasksResult = res.json();
-                          this.tasks = taskResponse.tasks;
-                        });
-                        // .subscribe(tasks => this.tasks = tasks,
-                        //           error => this.errorMessage = <any>error);
+    this.getTasks();
   }
 
+  nextClicked() {
+    this.paged.from+=1;
+    this.getTasks();
+  }
+
+  previousClicked() {
+    if (this.paged.from != 0) {
+      this.paged.from--;
+    }
+    this.getTasks();
+  }
+
+  private getTasks() {
+    this.tasksService.getTasks(this.paged)
+      .subscribe((res: Response) => {
+        var taskResponse: GetTasksResult = res.json();
+        this.tasks = taskResponse.tasks;
+        this.total = taskResponse.total;
+      });
+  }
 }
