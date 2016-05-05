@@ -12,7 +12,7 @@
       <td>{{task.dueDate | date}}</td>
     </tr>
   </table>
-  <button (click)="previousClicked()">Previous</button>
-  <button (click)="nextClicked()">Next</button>
+  <button (click)="previousClicked()" [disabled]="paged.from==0">Previous</button>
+  <button (click)="nextClicked()" [disabled]="(paged.from + paged.size) > total">Next</button>
 
   total: {{total}}

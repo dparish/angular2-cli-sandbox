@@ -15,7 +15,7 @@ export class TaskListComponent implements OnInit {
   tasks: Task[];
   errorMessage: String;
   total: number = 0;
-  private paged: Paged = {
+  paged: Paged = {
     from: 0,
     size: 20
   };
@@ -27,13 +27,13 @@ export class TaskListComponent implements OnInit {
   }
 
   nextClicked() {
-    this.paged.from+=1;
+    this.paged.from += this.paged.size;
     this.getTasks();
   }
 
   previousClicked() {
     if (this.paged.from != 0) {
-      this.paged.from--;
+      this.paged.from -= this.paged.size;
     }
     this.getTasks();
   }
@@ -43,6 +43,7 @@ export class TaskListComponent implements OnInit {
       .subscribe((res: Response) => {
         var taskResponse: GetTasksResult = res.json();
         this.tasks = taskResponse.tasks;
+        console.log("got " + this.tasks.length + " tasks");
         this.total = taskResponse.total;
       });
   }
